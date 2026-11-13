@@ -23,7 +23,6 @@ app.include_router(files.router, prefix=API_PREFIX)
 app.include_router(robots.router, prefix=API_PREFIX)
 app.include_router(chat.router, prefix=API_PREFIX)
 
-
 @app.get(f"{API_PREFIX}/health", tags=["系统"], summary="健康检查")
 async def health():
     return {"status": "ok"}
