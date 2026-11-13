@@ -1,0 +1,42 @@
+name: Deploy Admin
+
+on:
+  push:
+    paths:
+      - 'web/admin/**'
+      - 'web/pnpm-workspace.yaml'
+      - 'web/pnpm-lock.yaml'
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install & Build
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter admin build
+
+      - name: Upload to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.TX_HOST }}
+          username: ${{ secrets.TX_USER }}
+          key: ${{ secrets.TX_KEY }}
+          source: "web/admin/dist/"
+          target: ${{ secrets.CPDD_ADMIN_PATH }}
+          overwrite: true

@@ -1,0 +1,20 @@
+# /etc/systemd/system/cpdd-api.service
+# 后端 FastAPI 进程，端口 8001（避开服务器上可能已占用的 8000）
+# 启用：sudo systemctl daemon-reload && sudo systemctl enable cpdd-api && sudo systemctl start cpdd-api
+# 查看：sudo journalctl -u cpdd-api -f
+
+[Unit]
+Description=CPDD FastAPI Backend
+After=network.target postgresql.service redis.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/www/cpdd/api
+ExecStart=/root/.local/bin/uv run uvicorn app.main:app --host 0.0.0.0 --port 8001
+Restart=always
+RestartSec=5
+EnvironmentFile=-/root/www/cpdd/api/.env
+
+[Install]
+WantedBy=multi-user.target

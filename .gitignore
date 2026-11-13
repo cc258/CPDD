@@ -1,0 +1,19 @@
+# 依赖
+node_modules/
+.venv/
+.uv/
+
+# 构建产物
+dist/
+*.pyc
+__pycache__/
+
+# 环境变量与密钥
+.env
+
+# 运行时数据
+uploads/
+
+# 编辑器/系统
+.DS_Store
+.ipynb_checkpoints/

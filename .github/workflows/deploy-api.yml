@@ -1,0 +1,33 @@
+name: Deploy API
+
+on:
+  push:
+    paths:
+      - 'api/**'
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TX_HOST }}
+          username: ${{ secrets.TX_USER }}
+          key: ${{ secrets.TX_KEY }}
+          script: |
+            cd ${{ secrets.CPDD_API_DIR }}
+            git checkout .
+            git clean -fd
+            git pull
+
+            cd api
+            uv sync --frozen
+            uv run alembic upgrade head
+
+            sudo systemctl restart cpdd-api
+            sudo systemctl status cpdd-api --no-pager -l | tail -5

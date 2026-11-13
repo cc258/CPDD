@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cpdd
+      POSTGRES_PASSWORD: cpdd
+      POSTGRES_DB: cpdd
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://cpdd:cpdd@db:5432/cpdd
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: change-me-in-production
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - uploads:/app/uploads
+
+  fe:
+    build:
+      context: ./web
+      dockerfile: fe/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    environment:
+      API_UPSTREAM: http://api:8000
+    depends_on:
+      - api
+
+  admin:
+    build:
+      context: ./web
+      dockerfile: admin/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    environment:
+      API_UPSTREAM: http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  uploads:
