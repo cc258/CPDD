@@ -17,7 +17,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.TX_HOST }}
-          username: ${{ secrets.TX_USER }}
+          username: ${{ secrets.TX_ROOT }}
           key: ${{ secrets.TX_KEY }}
           script: |
             cd ${{ secrets.CPDD_API_DIR }}
