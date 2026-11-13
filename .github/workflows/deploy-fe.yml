@@ -31,6 +31,15 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm --filter fe build
 
+      - name: Verify secrets
+        run: |
+          : "${{ secrets.TX_HOST:?TX_HOST is not set }}"
+          : "${{ secrets.TX_ROOT:?TX_ROOT is not set }}"
+          : "${{ secrets.TX_KEY:?TX_KEY is not set }}"
+          : "${{ secrets.CPDD_FE_PATH:?CPDD_FE_PATH is not set }}"
+          echo "TX_HOST=${{ secrets.TX_HOST }}"
+          echo "CPDD_FE_PATH=${{ secrets.CPDD_FE_PATH }}"
+
       - name: Upload to server
         uses: appleboy/scp-action@master
         with:

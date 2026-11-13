@@ -10,8 +10,8 @@ docker compose up --build
 
 启动后：
 
-- API 服务：http://localhost:8000
-- 接口文档（Swagger UI）：http://localhost:8000/docs
+- API 服务：http://localhost:8010
+- 接口文档（Swagger UI）：http://localhost:8010/docs
 
 ## 方式二：本地开发
 
@@ -27,7 +27,7 @@ docker compose up -d db redis
 cd api
 uv sync                       # 安装依赖
 uv run alembic upgrade head   # 执行数据库迁移
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload --port 8010
 ```
 
 3. 启动前端（fe 和 admin 同时启动）：
@@ -38,8 +38,8 @@ pnpm install
 pnpm dev
 ```
 
-- 用户端：http://localhost:5173
-- 管理后台：http://localhost:5174
+- 用户端：http://localhost:5183
+- 管理后台：http://localhost:5184
 
 
 > 测试账号（密码均为 ``）：
@@ -135,12 +135,12 @@ pnpm dev
 ```text
 CPDD/
 ├── web/                        # 前端 pnpm monorepo
-│   ├── fe/                     # 用户端（仿微信聊天 SPA，端口 5173）
+│   ├── fe/                     # 用户端（仿微信聊天 SPA，端口 5183）
 │   │   └── src/
 │   │       ├── api/            # axios 实例、WebSocket 封装
 │   │       ├── store/          # Jotai 状态（登录态）
 │   │       └── pages/          # 登录页 / 主页（会话列表）/ 详情页（聊天窗口）
-│   └── admin/                  # 管理后台 SPA（端口 5174）
+│   └── admin/                  # 管理后台 SPA（端口 5184）
 │       └── src/
 │           ├── api/            # axios 实例
 │           ├── store/          # Jotai 状态（登录态）
@@ -198,3 +198,4 @@ CPDD/
 
 CPDD_ADMIN_PATH: /var/www/html/CPDD/admin
 CPDD_FE_PATH: /var/www/html/CPDD/fe
+CPDD_API_DIR: /var/www/html/CPDD/api

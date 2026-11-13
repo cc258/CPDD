@@ -1,0 +1,32 @@
+# /etc/caddy/CPDD.caddyfile
+# 放在 Caddy 的 include 目录或直接合并进主 Caddyfile
+# 启用：systemctl reload caddy
+#
+# 三个路径全部同域名：
+#   /        → fe 静态文件（用户端）
+#   /admin/* → admin 静态文件（管理后台）
+#   /api/*   → 反代 FastAPI 后端（自动支持 WebSocket 聊天）
+#
+# 把 your.domain.com 换成你的实际域名
+
+your.domain.com {
+    # —— admin 管理后台（优先匹配，必须在 fe root 之前）——
+    handle_path /admin/* {
+        root * /root/www/cpdd/admin
+        try_files {path} /admin/index.html
+        file_server
+    }
+
+    # —— API 反代 ——
+    handle_path /api/* {
+        reverse_proxy 127.0.0.1:8010
+    }
+
+    # —— fe 用户端（根路径，兜底所有未匹配）——
+    root * /root/www/cpdd/fe
+    try_files {path} /index.html
+    file_server
+
+    # 文件上传大小（100m）
+    client_max_body_size 100MB
+}

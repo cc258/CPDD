@@ -21,7 +21,7 @@ services:
     build: ./api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8010:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://cpdd:cpdd@db:5432/cpdd
       REDIS_URL: redis://redis:6379/0
@@ -38,9 +38,9 @@ services:
       dockerfile: fe/Dockerfile
     restart: unless-stopped
     ports:
-      - "5173:80"
+      - "5183:80"
     environment:
-      API_UPSTREAM: http://api:8000
+      API_UPSTREAM: http://api:8010
     depends_on:
       - api
 
@@ -50,9 +50,9 @@ services:
       dockerfile: admin/Dockerfile
     restart: unless-stopped
     ports:
-      - "5174:80"
+      - "5184:80"
     environment:
-      API_UPSTREAM: http://api:8000
+      API_UPSTREAM: http://api:8010
     depends_on:
       - api
 
